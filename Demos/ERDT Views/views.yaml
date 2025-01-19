@@ -1,0 +1,26 @@
+get_active_trucks:
+  entity: Truck
+  permissions: 
+    - Truck::get_status
+  query: entity.get_status() == "active"
+
+get_trucks_due_for_maintenance:
+  entity: Truck
+  permissions: 
+    - Role::MaintenanceStaff
+  query: entity.getMaintenanceDetails().unresolved().count() > 0
+
+get_trucks_idle_for_15_min:
+  entity: Truck
+  permissions: 
+    - Role::FleetManager
+  query: entity.getLast15MinLocations().unique().count() == 1
+
+get_trucks_inside_zone:
+  entity: Truck
+  permissions: 
+    - Truck::get_location
+  parameters: 
+    - name: zone
+      type: Zone
+  query: zone.contains(entity.get_location())
